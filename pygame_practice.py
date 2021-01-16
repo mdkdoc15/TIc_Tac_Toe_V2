@@ -73,6 +73,12 @@ def main():
             else:
                 return 8
 
+    def selectRandom(list_of_vals):
+        import random as rand
+        length = len(list_of_vals)
+        r = rand.randrange(0, length)
+        return list_of_vals[r]
+
     def comp_move():
         # #----------
         # Order is determined by:
