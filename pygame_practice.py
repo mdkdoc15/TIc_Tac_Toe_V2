@@ -107,38 +107,52 @@ def main():
             return -1 
 
     #Used to update the screen with X's and O's
-    def blip_sec(player_icon,loc):
+    def blip_sec(player,loc):
         buffer_size = int(SCREEN_SIZE/10) # Makes the board not go up to the edge of the window
         spacing_size = int(4*SCREEN_SIZE/5 * (1/3)) # Allows for board to be centered
-        if(loc == 0):
-            screen.blit(player_icon, (buffer_size,buffer_size))
-        if(loc == 1):
-            screen.blit(player_icon, (buffer_size + spacing_size,buffer_size))
-        if(loc == 2):
-            screen.blit(player_icon, (buffer_size + 2 * spacing_size,buffer_size))
-        if(loc == 3):
-            screen.blit(player_icon, (buffer_size, buffer_size + spacing_size))
-        if(loc == 4):
-            screen.blit(player_icon, (buffer_size + spacing_size,buffer_size + spacing_size))
-        if(loc == 5):
-            screen.blit(player_icon, (buffer_size + 2 * spacing_size,buffer_size + spacing_size))
-        if(loc == 6):
-            screen.blit(player_icon, (buffer_size,buffer_size + 2 * spacing_size))
-        if(loc == 7):
-            screen.blit(player_icon, (buffer_size+ spacing_size ,buffer_size + 2 * spacing_size))
-        if(loc == 8):
-            screen.blit(player_icon, (buffer_size + 2 * spacing_size,buffer_size + 2 * spacing_size))
-    
-    def ret_player_icon(player):
-        if player == 'X':
-            return x_image
-        elif player == 'O':
-            return o_image
+        if(player == 'X'):
+            if(loc == 0):
+                screen.blit(x_image, (2* buffer_size,2*buffer_size))
+            if(loc == 1):
+                screen.blit(x_image, (2*buffer_size + spacing_size,2*buffer_size))
+            if(loc == 2):
+                screen.blit(x_image, (2*buffer_size + 2 * spacing_size,2*buffer_size))
+            if(loc == 3):
+                screen.blit(x_image, (2*buffer_size,2* buffer_size + spacing_size))
+            if(loc == 4):
+                screen.blit(x_image, (2*buffer_size + spacing_size,2*buffer_size + spacing_size))
+            if(loc == 5):
+                screen.blit(x_image, (2*buffer_size + 2 * spacing_size,2*buffer_size + spacing_size))
+            if(loc == 6):
+                screen.blit(x_image, (2*buffer_size,2*buffer_size + 2 * spacing_size))
+            if(loc == 7):
+                screen.blit(x_image, (2*buffer_size+ spacing_size ,2*buffer_size + 2 * spacing_size))
+            if(loc == 8):
+                screen.blit(x_image, (2*buffer_size + 2 * spacing_size,2*buffer_size + 2 * spacing_size))
+        else:
+            if(loc == 0):
+                screen.blit(o_image, (2* buffer_size,2*buffer_size))
+            if(loc == 1):
+                screen.blit(o_image, (2*buffer_size + spacing_size,2*buffer_size))
+            if(loc == 2):
+                screen.blit(o_image, (2*buffer_size + 2 * spacing_size,2*buffer_size))
+            if(loc == 3):
+                screen.blit(o_image, (2*buffer_size,2* buffer_size + spacing_size))
+            if(loc == 4):
+                screen.blit(o_image, (2*buffer_size + spacing_size,2*buffer_size + spacing_size))
+            if(loc == 5):
+                screen.blit(o_image, (2*buffer_size + 2 * spacing_size,2*buffer_size + spacing_size))
+            if(loc == 6):
+                screen.blit(o_image, (2*buffer_size,2*buffer_size + 2 * spacing_size))
+            if(loc == 7):
+                screen.blit(o_image, (2*buffer_size+ spacing_size ,2*buffer_size + 2 * spacing_size))
+            if(loc == 8):
+                screen.blit(o_image, (2*buffer_size + 2 * spacing_size,2*buffer_size + 2 * spacing_size))
 
     def update_board():
         for i in range(0, 9):
             if (board[i] != '-'):
-                blip_sec(ret_player_icon(board[i]) , i)
+                blip_sec(board[i] , i)
                 display_board()
 
     # Will be used in order to determine if an X needs to be placed
@@ -148,7 +162,6 @@ def main():
         if(isValidMove(location)):
             board[location] = 'X'
             board[comp_move()] = '0'
-            update_board()
 
     def isValidMove(pos):
         try:
@@ -213,12 +226,12 @@ def main():
         print(board[3] + ' | ' + board[4] + ' | ' + board[5])
         print(board[6] + ' | ' + board[7] + ' | ' + board[8])
 
-    
 
     # main loop
     while running:
         screen.fill((255,255,255)) #Sets the color of the screen to white
         base_board() # Adds the board onto the image
+        update_board() # Adds computer and player movements to the screen
 
         # event handling, gets all event from the event queue
         for event in pygame.event.get():
@@ -229,7 +242,8 @@ def main():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_click()
                 
-        
+        if check_win(board, 'X') or check_win(board, 'O'):
+            running = False
         pygame.display.update()
      
      
