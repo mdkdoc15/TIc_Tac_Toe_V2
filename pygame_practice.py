@@ -167,7 +167,7 @@ def main():
         location = get_loc(pos)
         if(isValidMove(location)):
             board[location] = 'X'
-            board[comp_move()] = '0'
+            board[comp_move()] = 'O'
 
     def isValidMove(pos):
         try:
@@ -232,6 +232,13 @@ def main():
         print(board[3] + ' | ' + board[4] + ' | ' + board[5])
         print(board[6] + ' | ' + board[7] + ' | ' + board[8])
 
+    def check_tie(board):
+        for i in board:
+            if(i == '-'):
+                return False
+        display_board()
+        print("Tie game!")
+        return True
 
     # main loop
     while running:
@@ -249,6 +256,9 @@ def main():
                 mouse_click()
                 
         if check_win(board, 'X') or check_win(board, 'O'):
+            print('Game over')
+            running = False
+        if check_tie(board):
             running = False
         pygame.display.update()
      
