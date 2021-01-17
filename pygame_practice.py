@@ -6,7 +6,8 @@ def main():
      
     # initialize the pygame module
     pygame.init()
-    # load and set the logo -- No impact on mac?
+    pygame.font.init() # Allows us to create text on the screen
+    # load and set the logo
     icon = pygame.image.load('Images/icon.png')
     pygame.display.set_icon(icon)
     #Set the name of the window when it pops up
@@ -159,7 +160,7 @@ def main():
         for i in range(0, 9):
             if (board[i] != '-'):
                 blip_sec(board[i] , i)
-                display_board()
+                
 
     # Will be used in order to determine if an X needs to be placed
     def mouse_click():
@@ -167,7 +168,8 @@ def main():
         location = get_loc(pos)
         if(isValidMove(location)):
             board[location] = 'X'
-            board[comp_move()] = 'O'
+            if not (check_win(board, 'X') or check_tie(board)):
+                board[comp_move()] = 'O'
 
     def isValidMove(pos):
         try:
@@ -209,14 +211,6 @@ def main():
             return True
         return False
 
-    def check_tie(board):
-        for i in board:
-            if(i == '-'):
-                return False
-        display_board(board)
-        print("Tie game!")
-        return True
-
     def check_win(board , player):
         return check_diag(board , player) or check_col(board , player) or check_row(board , player)
 
@@ -227,7 +221,7 @@ def main():
 
 
     def display_board():
-        os.system('clear')#used to clear the screen when drawing a new board
+        #os.system('clear')#used to clear the screen when drawing a new board
         print(board[0] + ' | ' + board[1] + ' | ' + board[2])
         print(board[3] + ' | ' + board[4] + ' | ' + board[5])
         print(board[6] + ' | ' + board[7] + ' | ' + board[8])
@@ -240,27 +234,56 @@ def main():
         print("Tie game!")
         return True
 
-    # main loop
-    while running:
-        screen.fill((255,255,255)) #Sets the color of the screen to white
-        base_board() # Adds the board onto the image
-        update_board() # Adds computer and player movements to the screen
+    def print_win(player):
+        update_board() #Used to show the last move made by the player
+        
+        # https://stackoverflow.com/questions/20842801/how-to-display-text-in-pygame
+        
+        game_over_font = pygame.font.SysFont('Comic Sans MS', 50)
+        if player == '-':
+            text_surface = game_over_font.render('Tie Game!', False, (0,0,0))
+            screen.blit(text_surface, (0,0))
+        if player == 'X':
+            text_surface = game_over_font.render('X\'s win!', False, (0,0,0))
+            screen.blit(text_surface, (0,0))
+        if player == 'O':
+            text_surface = game_over_font.render('O\'s win!', False, (0,0,0))
+            screen.blit(text_surface, (0,0))
 
+
+    game_over = False #Used to close the screen enterly
+    # main loop
+    while not game_over:
+        while running:
+            screen.fill((255,255,255)) #Sets the color of the screen to white
+            base_board() # Adds the board onto the image
+            update_board() # Adds computer and player movements to the screen
+
+            # event handling, gets all event from the event queue
+            for event in pygame.event.get():
+                # only do something if the event is of type QUIT
+                if event.type == pygame.QUIT:
+                    # change the value to False, to exit the main loop
+                    running = False
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_click()
+                    
+            if check_win(board, 'X'):
+                print_win('X')
+                running = False
+            elif check_win(board, 'O'):
+                print_win('O')
+                running = False
+            elif check_tie(board):
+                print_win('-')
+                running = False
+            pygame.display.update()
+    
         # event handling, gets all event from the event queue
         for event in pygame.event.get():
             # only do something if the event is of type QUIT
             if event.type == pygame.QUIT:
-                # change the value to False, to exit the main loop
-                running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_click()
-                
-        if check_win(board, 'X') or check_win(board, 'O'):
-            print('Game over')
-            running = False
-        if check_tie(board):
-            running = False
-        pygame.display.update()
+                game_over = True
      
      
 # run the main function only if this module is executed as the main script
