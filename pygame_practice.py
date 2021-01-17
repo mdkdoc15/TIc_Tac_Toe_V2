@@ -80,6 +80,8 @@ def main():
         r = rand.randrange(0, length)
         return list_of_vals[r]
 
+
+    #added this comment
     def comp_move():
         # #----------
         # Order is determined by:
